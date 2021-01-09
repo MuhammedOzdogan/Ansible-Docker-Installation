@@ -1,0 +1,22 @@
+---
+
+- hosts: playground
+  remote_user: muhammed
+  become: true
+
+
+  tasks:
+    - name: Add docker Group
+      group:
+        name: docker
+        state: present
+
+    - name: Add {{ ansible_user }} to docker group
+      user:
+        name: '{{ ansible_user }}'
+        groups: docker
+        append: true
+
+    - name: Reset ssh connection to allow user changes to take affect
+      meta: reset_connection
+
