@@ -1,6 +1,6 @@
 ---
-- hosts: playground
-  remote_user: muhammed
+- hosts: ec2
+  remote_user: ubuntu
   become: yes
   tasks:
     - name: Ben kimim
