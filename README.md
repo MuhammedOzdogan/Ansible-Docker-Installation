@@ -32,6 +32,8 @@ If you add your ip address of your remote machine to here and give a name to it.
     [aws]
     ec2 ansible_user=ubuntu
 
+ - **aws** is just the group name. You can use this notation to group your hosts. You can put the hosts on Amazon to aws group or Google Cloud machines to
+   gc etc. If you don't like this line you can delete it.
  - **ec2** is the name of my remote host you can use the ip address of your remote machine or the name that you give  in /etc/hosts file.
    
  - **ansible_user** is the username that you want to login that machine.
