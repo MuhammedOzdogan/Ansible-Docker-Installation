@@ -1,0 +1,21 @@
+---
+- debug:
+    msg: '*** Post Install Configuration is running... ***'
+
+- name: Add docker Group
+  become: true
+  group:
+    name: docker
+    state: present
+
+- name: Add {{ ansible_user }} to docker group
+  become: true
+  user:
+    name: '{{ ansible_user }}'
+    groups: docker
+    append: true
+
+- name: Reset ssh connection to allow user changes to take affect
+  become: true
+  meta: reset_connection
+

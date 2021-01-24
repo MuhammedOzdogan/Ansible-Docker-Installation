@@ -1,59 +1,14 @@
 ---
-- hosts: playground
+- hosts: all
   become: true
-  vars_files:
-    - vars/vars.yaml
-
-
+  vars_files: tasks/vars/docker-vars.yml
 
   tasks:
-    - name: Install aptitude using apt
-      apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
-
-
-    - name: Remove old Docker Softwares
-      apt:
-        name={{ item }}
-        state=absent
-      loop: ["docker", "docker-engine", "docker.io", "containerd", "runc"]
-
-    - name: Update apt cache
-      apt: update_cache=true
-
-    - name: Upgrade system
-      apt: upgrade=safe
-
-
-
-    - name: Install required system packages
-      apt: name={{ item }} state=latest update_cache=yes
-      loop: ['apt-transport-https', 'ca-certificates',
-             'curl', 'software-properties-common',
-             'python3-pip', 'virtualenv', 'python3-setuptools']
-
-
-    - name: Add Docker GPG Key
-      apt_key:
-        url: https://download.docker.com/linux/debian/gpg
-        state: present
-
-    - name: Add docker repo
-      apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/debian buster  stable
-        state: present
-
-    - name: Update Apt
-      apt: update_cache=true
-
-
     - name: Install Docker
-      apt: name={{ item }} state=latest
-      loop: ["docker-ce", "docker-ce-cli", "containerd.io"]
+      import_tasks: tasks/install_docker.yml
 
-    - name: Test Docker
-      command: docker --version
-      register: dockerversion
+    - name: Post Installation Configuration
+      import_tasks: tasks/post-install.yaml
 
-    - debug: msg={{ dockerversion.stdout }}
-    - debug: msg={{ dockerversion.stderr }}
-
+    - name: Install Docker Comopse
+      import_tasks: tasks/install_docker_compose.yml

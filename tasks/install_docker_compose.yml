@@ -1,0 +1,30 @@
+---
+
+- debug:
+    msg: '*** docker-compose installation started ***'
+
+- name: Get Os
+  shell: uname -s
+  register: os
+
+- name: Get Architecture
+  shell: uname -m
+  register: arc
+
+- set_fact:
+    docker_compose_url: "{{docker_compose_base_url + os.stdout + '-' + arc.stdout}}"
+
+- debug:
+    msg: "Url is: {{docker_compose_url}}"
+
+- name: Delete old docker-compose
+  file:
+    path: /usr/local/bin/docker-compose
+    state: absent
+
+
+- name: Install docker-compose
+  get_url:
+    url : '{{docker_compose_url}}'
+    dest: /usr/local/bin/docker-compose
+    mode: '0775'

@@ -1,0 +1,64 @@
+
+- debug:
+    msg: "*** Docker Installation Started ***"
+
+- name: Install aptitude using apt
+  apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+- name: Remove old Docker Softwares
+  apt: name={{ item }} state=absent
+  loop: '{{old_docker_packages}}'
+
+- name: Update apt cache
+  apt: update_cache=true
+
+- name: Upgrade system
+  apt: upgrade=safe
+
+- name: Install required system packages
+  apt: name={{ item }} state=latest update_cache=yes
+  loop: '{{docker_dependencies}}'
+
+
+- name: Add Docker GPG Key
+  apt_key:
+    url: "{{ docker_gpg_url }}"
+    state: present
+
+- name: Find out release
+  shell:
+    cmd: lsb_release -cs
+  register: result
+
+- set_fact:
+    docker_repo: "{{ubuntu_docker_repo + result.stdout + ' stable'}}"
+  when: ansible_distribution == 'Ubuntu'
+
+- set_fact:
+    docker_repo: "{{debian_docker_repo + result.stdout + ' stable'}}"
+  when: ansible_distribution == 'Debian'
+
+- debug:
+    msg: "Docker repo is: {{docker_repo}}"
+
+
+- name: Add docker repo
+  apt_repository:
+    repo: '{{docker_repo}}'
+    state: present
+
+- name: Update Apt
+  apt: update_cache=true
+
+
+- name: Install Docker
+  apt: name={{ item }} state=latest
+  loop: '{{docker_packages}}'
+
+- name: Test Docker
+  command: docker --version
+  register: docker_version
+
+- debug: msg={{ docker_version.stdout }}
+
+

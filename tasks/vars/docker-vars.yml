@@ -1,0 +1,16 @@
+---
+
+- old_docker_packages: ["docker", "docker-engine", "docker.io", "containerd", "runc"]
+
+- docker_dependencies: [ 'apt-transport-https', 'ca-certificates',
+      'curl', 'software-properties-common',
+      'python3-pip', 'virtualenv', 'python3-setuptools' ]
+
+- docker_gpg_url: https://download.docker.com/linux/debian/gpg
+
+- debian_docker_repo: 'deb [arch=amd64] https://download.docker.com/linux/debian '
+- ubuntu_docker_repo: 'deb [arch=amd64] https://download.docker.com/linux/ubuntu '
+
+- docker_packages: ["docker-ce", "docker-ce-cli", "containerd.io"]
+
+- docker_compose_base_url: 'https://github.com/docker/compose/releases/download/1.28.0/docker-compose-'
